@@ -16,9 +16,10 @@ from dotenv import load_dotenv
 
 logger = logging.getLogger("tastematch.gemini")
 
-TEXT_MODEL = "gemini-4-hydrogen"
+TEXT_MODEL = "gemini-3.5-flash-lite"
 EMBED_MODEL = "gemini-embedding-2"
 EMBED_DIMENSIONS = 768
+REQUEST_TIMEOUT_MS = 30_000
 
 MAX_ATTEMPTS = 3
 BACKOFF_SECONDS = 1.0
@@ -43,7 +44,8 @@ def get_client():
         raise GeminiError("GEMINI_API_KEY is not set (see .env.example)")
 
     from google import genai
-    _client = genai.Client()
+    from google.genai import types
+    _client = genai.Client(http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT_MS))
     return _client
 
 
@@ -58,10 +60,11 @@ def _call_with_retry(label: str, fn):
         except Exception as error:  # the SDK raises several error types
             last_error = error
             code = getattr(error, "code", None)
-            if code not in TRANSIENT_CODES:
+            timed_out = "timeout" in type(error).__name__.lower()
+            if code not in TRANSIENT_CODES and not timed_out:
                 logger.error("%s failed (not retrying): %s", label, type(error).__name__)
                 raise GeminiError(f"{label} failed: {type(error).__name__}") from error
-            logger.warning("%s attempt %d/%d failed with code %s", label, attempt, MAX_ATTEMPTS, code)
+            logger.warning("%s attempt %d/%d failed (%s)", label, attempt, MAX_ATTEMPTS, code or type(error).__name__)
             if attempt < MAX_ATTEMPTS:
                 time.sleep(BACKOFF_SECONDS * attempt)
     raise GeminiError(f"{label} failed after {MAX_ATTEMPTS} attempts") from last_error
@@ -73,34 +76,35 @@ def generate_text(prompt: str, json_schema: Optional[Dict] = None) -> str:
     Pass json_schema to ask for JSON output that follows that schema.
     """
     client = get_client()
-    kwargs = {"model": TEXT_MODEL, "input": prompt}
+    config = {}
     if json_schema is not None:
-        kwargs["response_format"] = {
-            "type": "text",
-            "mime_type": "application/json",
-            "schema": json_schema,
-        }
-    result = _call_with_retry("generate_text", lambda: client.interactions.create(**kwargs))
-    text = getattr(result, "output_text", None)
+        config = {"response_mime_type": "application/json", "response_json_schema": json_schema}
+    result = _call_with_retry(
+        "generate_text",
+        lambda: client.models.generate_content(model=TEXT_MODEL, contents=prompt, config=config),
+    )
+    text = (result.text or "").strip()
     if not text:
         raise GeminiError("generate_text returned an empty reply")
     return text
 
 
 def embed_texts(texts: List[str]) -> List[List[float]]:
-    """Return one embedding vector per input text."""
-    if not texts:
-        return []
+    """Return one embedding vector per input text.
+
+    gemini-embedding-2 merges a list of inputs into a single vector, so each
+    text is embedded in its own call to get one vector per text.
+    """
     client = get_client()
-    result = _call_with_retry(
-        "embed_texts",
-        lambda: client.models.embed_content(
-            model=EMBED_MODEL,
-            contents=texts,
-            config={"output_dimensionality": EMBED_DIMENSIONS},
-        ),
-    )
-    vectors = [list(item.values) for item in result.embeddings]
-    if len(vectors) != len(texts):
-        raise GeminiError(f"embed_texts returned {len(vectors)} vectors for {len(texts)} texts")
+    vectors = []
+    for text in texts:
+        result = _call_with_retry(
+            "embed_texts",
+            lambda t=text: client.models.embed_content(
+                model=EMBED_MODEL,
+                contents=t,
+                config={"output_dimensionality": EMBED_DIMENSIONS},
+            ),
+        )
+        vectors.append(list(result.embeddings[0].values))
     return vectors
