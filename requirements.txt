@@ -2,3 +2,6 @@ pandas
 pytest
 streamlit
 tabulate
+google-genai
+python-dotenv
+numpy
