@@ -1,0 +1,43 @@
+{
+  "genres": {
+    "pop": "Pop is built around catchy hooks and clean production. It usually has medium to high energy and suits parties, workouts, and everyday listening.",
+    "lofi": "Lofi uses slow relaxed beats, soft keys, and a warm worn sound with few vocals. It has low energy and suits studying, reading, and working.",
+    "rock": "Rock is driven by electric guitars and live drums. It ranges from confident to intense and has high energy, which suits driving and workouts.",
+    "ambient": "Ambient music uses slow evolving textures with little rhythm. It has very low energy and suits relaxing, sleeping, or deep concentration.",
+    "jazz": "Jazz features improvised melodies, piano, and brushed drums. It is warm and relaxed with low energy and suits cafes, dinners, and quiet evenings.",
+    "synthwave": "Synthwave recreates 80s electronic sounds with pulsing synths and steady rhythm. It is nostalgic and moody and suits night drives and retro vibes.",
+    "indie pop": "Indie pop mixes pop melodies with jangly or hazy guitars and a handmade feel. It is cheerful or dreamy with medium energy and suits sunny days.",
+    "hip hop": "Hip hop centers on rhythm, bass, and rapped vocals. It ranges from confident and hard to laid back and chill and suits walking, commuting, and hanging out.",
+    "classical": "Classical music is acoustic and orchestral or solo instrumental. It is usually quiet and emotional with low energy and suits calm moments and sleep.",
+    "country": "Country has acoustic guitar, storytelling lyrics, and a warm feel. It is often nostalgic or uplifting and suits road trips and relaxed evenings.",
+    "edm": "EDM is electronic dance music with big drops and fast tempos. It has very high energy and suits festivals, parties, and running.",
+    "r&b": "R&B combines smooth vocals with slow groovy rhythms. It is romantic or moody with medium energy and suits evenings and late nights.",
+    "metal": "Metal uses distorted guitars, fast drums, and powerful vocals. It has extreme energy and an aggressive tone and suits heavy workouts and venting.",
+    "folk": "Folk is acoustic and intimate, built on fingerpicked guitar and honest vocals. It is calm, peaceful, or wistful with low energy and suits quiet reflection.",
+    "reggae": "Reggae has an offbeat rhythm, deep bass, and a sunny feel. It is relaxed or uplifting with medium energy and suits beaches and unwinding.",
+    "blues": "Blues is built on emotional guitar and expressive vocals about hardship. It is slow and melancholy with low energy and suits late evenings.",
+    "punk": "Punk is fast, loud, and raw with short songs and shouted vocals. It has very high energy and a rebellious attitude.",
+    "latin": "Latin music is rhythmic with percussion and brass. It is joyful and danceable with high energy and suits dancing and celebrations.",
+    "soul": "Soul features warm powerful vocals over gentle grooves. It is romantic and heartfelt with medium energy and suits slow dancing and quiet nights."
+  },
+  "moods": {
+    "happy": "A happy mood means upbeat, bright music with positive lyrics and a major key feel.",
+    "chill": "A chill mood means relaxed, low pressure music with a steady slow pulse that is easy to have in the background.",
+    "intense": "An intense mood means powerful, driving music with high energy that builds adrenaline.",
+    "relaxed": "A relaxed mood means gentle, unhurried music that helps you unwind.",
+    "moody": "A moody mood means dark, atmospheric music with an introspective or brooding feel.",
+    "focused": "A focused mood means steady, repetitive music without strong vocals that helps concentration.",
+    "confident": "A confident mood means bold, swaggering music with strong rhythm and attitude.",
+    "peaceful": "A peaceful mood means very quiet, serene music that calms the mind and suits rest.",
+    "nostalgic": "A nostalgic mood means warm, familiar sounding music that recalls memories of the past.",
+    "euphoric": "A euphoric mood means soaring, ecstatic music with huge energy and emotional release.",
+    "romantic": "A romantic mood means smooth, tender music with warm vocals suited to couples and slow evenings.",
+    "aggressive": "An aggressive mood means harsh, forceful music full of anger and raw power.",
+    "melancholy": "A melancholy mood means slow, wistful music with a sad but reflective feel.",
+    "uplifting": "An uplifting mood means hopeful, positive music that lifts your spirits.",
+    "sad": "A sad mood means slow emotional music about loss or heartbreak with a heavy feel.",
+    "rebellious": "A rebellious mood means loud, defiant music that rejects rules and expectations.",
+    "joyful": "A joyful mood means exuberant, danceable music that makes people celebrate.",
+    "dreamy": "A dreamy mood means soft, hazy music that feels like floating and drifting away."
+  }
+}

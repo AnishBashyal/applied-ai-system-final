@@ -1,19 +1,37 @@
-id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
-1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18
-2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71
-3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.66,0.10
-4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86
-5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05
-6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.41,0.92
-7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89
-8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
-9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
-10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
-11,Concrete Kings,Blockhead Sam,hip hop,confident,0.78,95,0.62,0.85,0.12
-12,Moonlit Sonata Redux,Elise Varga,classical,peaceful,0.18,66,0.55,0.25,0.97
-13,Dusty Road Home,Hank Marlow,country,nostalgic,0.52,100,0.68,0.58,0.74
-14,Neon Overdrive,Pulse Theory,edm,euphoric,0.96,128,0.88,0.92,0.03
-15,Velvet Hours,Amara Lane,r&b,romantic,0.45,85,0.72,0.70,0.40
-16,Iron Requiem,Black Cathedral,metal,aggressive,0.98,170,0.25,0.45,0.04
-17,Willow Creek,Fern & Ash,folk,melancholy,0.30,76,0.30,0.38,0.93
-18,Island Breeze,Sunny Rootz,reggae,uplifting,0.60,92,0.86,0.80,0.45
+id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness,description
+1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18,Bright upbeat pop with a catchy chorus that feels like a sunny morning and a good start to the day
+2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71,Mellow lofi beats with soft keys and vinyl crackle made for late night coding and studying
+3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.66,0.10,Driving rock with heavy guitars and pounding drums that feels like racing through a storm
+4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86,Quiet acoustic lofi with gentle rain sounds that is calm and perfect for reading or studying
+5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05,High octane pop with a relentless beat built for workouts and pushing through the last rep
+6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.41,0.92,Slow floating ambient textures that feel weightless and help you drift into deep relaxation
+7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89,Smooth brushed drums and warm piano jazz that fits a lazy afternoon in a cozy cafe
+8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22,Pulsing retro synths and a dark steady groove for driving through city lights after midnight
+9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78,Steady minimal lofi with no distracting vocals that helps you concentrate on deep work
+10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35,Cheerful indie pop with jangly guitars and sing along hooks that feels like a summer party on a rooftop
+11,Concrete Kings,Blockhead Sam,hip hop,confident,0.78,95,0.62,0.85,0.12,Hard hitting hip hop with a bold bassline and confident swagger that sounds like walking into the room
+12,Moonlit Sonata Redux,Elise Varga,classical,peaceful,0.18,66,0.55,0.25,0.97,Delicate solo piano that is quiet and serene and suits a calm evening or falling asleep
+13,Dusty Road Home,Hank Marlow,country,nostalgic,0.52,100,0.68,0.58,0.74,Warm country with acoustic guitar and slide steel that feels like driving home down a dusty road and remembering old times
+14,Neon Overdrive,Pulse Theory,edm,euphoric,0.96,128,0.88,0.92,0.03,Huge festival electronic drops and soaring synths that make a crowd lose control with joy
+15,Velvet Hours,Amara Lane,r&b,romantic,0.45,85,0.72,0.70,0.40,Smooth r&b with silky vocals and a slow groove perfect for a quiet romantic evening
+16,Iron Requiem,Black Cathedral,metal,aggressive,0.98,170,0.25,0.45,0.04,Crushing metal with blast beats and screamed vocals full of rage and raw power
+17,Willow Creek,Fern & Ash,folk,melancholy,0.30,76,0.30,0.38,0.93,Sparse fingerpicked folk with a sad wistful voice that feels like a lonely walk by a creek
+18,Island Breeze,Sunny Rootz,reggae,uplifting,0.60,92,0.86,0.80,0.45,Sunny reggae with an easy offbeat rhythm and positive vibes that lifts your mood on a beach
+19,Glass Hearts,Violet Static,pop,sad,0.55,98,0.28,0.60,0.30,Slow emotional pop about heartbreak with a quiet verse and a big tearful chorus
+20,Late Bus Home,Blockhead Sam,hip hop,chill,0.55,88,0.55,0.72,0.25,Laid back hip hop with dusty drums and mellow samples for a long ride home at night
+21,Garage Fever,Rust Engine,punk,rebellious,0.93,180,0.70,0.55,0.08,Fast loud punk with shouted vocals and zero patience that makes you want to break the rules
+22,Blue Hour Blues,Delta Rain,blues,melancholy,0.40,72,0.35,0.50,0.70,Slow bluesy guitar and a gravelly voice that feels like sitting alone at dusk with a drink
+23,Calle Dorada,Sol y Fuego,latin,joyful,0.85,105,0.90,0.88,0.30,Fiery latin rhythms with trumpets and percussion that make it impossible not to dance
+24,Velvet Smoke,Marcus Vale,soul,romantic,0.48,82,0.66,0.64,0.45,Warm soulful vocals over a gentle groove for slow dancing and candlelit dinners
+25,Pine Forest Hymn,Fern & Ash,folk,peaceful,0.22,68,0.52,0.30,0.95,Soft acoustic folk with humming and birdsong that is calm and good for a quiet morning outdoors
+26,Pixel Dreams,Neon Echo,synthwave,nostalgic,0.68,105,0.62,0.70,0.20,Dreamy retro synthwave full of 80s arcade nostalgia and warm analog sounds
+27,Candlelight Standards,Slow Stereo,jazz,romantic,0.42,92,0.70,0.52,0.85,Gentle piano trio jazz with soft ballads that sets a romantic mood for a quiet dinner
+28,Deep Work Drift,Orbit Bloom,ambient,focused,0.25,58,0.50,0.35,0.90,Minimal ambient pads with no melody or vocals that fade into the background while you concentrate
+29,Festival Fire,Pulse Theory,edm,happy,0.90,126,0.85,0.90,0.05,Joyful dance floor electronic music with an upbeat drop for a big summer festival
+30,Highway Sunrise,Hank Marlow,country,uplifting,0.70,118,0.80,0.60,0.50,Upbeat country with bright guitar and a hopeful chorus for a road trip at dawn
+31,Kingston Sunset,Sunny Rootz,reggae,relaxed,0.45,80,0.78,0.75,0.55,Slow mellow reggae with warm bass that feels like unwinding at sunset by the water
+32,Midnight Confessions,Amara Lane,r&b,moody,0.40,78,0.35,0.66,0.35,Dark slow r&b with whispered vocals and heavy emotion for late night thoughts
+33,Cotton Cloud Summer,Indigo Parade,indie pop,dreamy,0.50,110,0.65,0.66,0.50,Soft dreamy indie pop with hazy guitars that feels like floating on a lazy summer day
+34,Nocturne in Gray,Elise Varga,classical,melancholy,0.20,60,0.30,0.28,0.96,Slow sorrowful classical piano and strings that evokes loss and quiet reflection
+35,Backroad Riot,Voltline,rock,confident,0.78,140,0.60,0.55,0.20,Swaggering rock with big riffs and a cocky attitude that is great for driving with the windows down
+36,Cardio Drop,Max Pulse,edm,intense,0.94,150,0.72,0.86,0.04,Relentless high tempo electronic beats and hard drops made for running and intense training

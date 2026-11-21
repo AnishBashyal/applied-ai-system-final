@@ -16,7 +16,7 @@ PERFECT = {"genre": "pop", "mood": "happy", "energy": 0.8, "likes_acoustic": Fal
 # ---------- unit tests: load_songs ----------
 
 def test_load_songs_loads_all_rows():
-    assert len(load_songs("data/songs.csv")) == 18
+    assert len(load_songs("data/songs.csv")) == 36
 
 
 def test_load_songs_converts_numbers():
@@ -96,7 +96,7 @@ def test_recommend_songs_returns_k_results():
 
 def test_recommend_songs_k_bigger_than_catalog():
     songs = load_songs("data/songs.csv")
-    assert len(recommend_songs(PERFECT, songs, k=100)) == 18
+    assert len(recommend_songs(PERFECT, songs, k=100)) == 36
 
 
 def test_recommend_songs_sorted_highest_first():
