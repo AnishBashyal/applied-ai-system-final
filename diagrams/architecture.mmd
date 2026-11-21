@@ -1,0 +1,39 @@
+flowchart TD
+    U([User request: free text]) --> V{Input validator<br/>empty, too long, unreadable?}
+    V -- invalid --> R1[/Refuse with a clear message/]
+    V -- valid --> KP
+    V -- valid --> GP
+
+    subgraph JA [Judge A - rules, no LLM]
+        KP[Keyword parser] --> SC[Original scorer<br/>genre, mood, energy, acoustic]
+        SC --> AB{Genre or mood<br/>recognised?}
+    end
+    AB -- no --> ABS[A abstains]
+    AB -- yes --> RA[A top-k ranking]
+
+    subgraph JB [Judge B - Gemini]
+        GP[Gemini parser<br/>rewrites request as a vibe description] --> EM[Gemini embeddings]
+        EM --> RT[Retriever: cosine similarity<br/>over song descriptions]
+        RT --> RB[B top-k ranking + similarity]
+    end
+
+    KB[(Song descriptions<br/>data/songs.csv)] --> RT
+    NT[(Genre and mood notes<br/>data/notes.json)] --> EX
+
+    RA --> AG
+    ABS --> AG
+    RB --> AG
+    AG{Agreement check<br/>overlap of A and B top-k<br/>+ B similarity} -- weak or none --> R2[/Refuse: no confident match/]
+    AG -- ok --> EX[Gemini explainer<br/>writes the why from retrieved text]
+    EX --> GC{Grounding check<br/>claims found in retrieved text?}
+    GC -- no --> R3[/Fall back to plain retrieved text/]
+    GC -- yes --> OUT[/Recommendations + explanation + confidence/]
+    R3 --> OUT
+
+    OUT --> LOG[(Run log)]
+    R1 --> LOG
+    R2 --> LOG
+
+    EV[Evaluation script<br/>fixed test queries, pass/fail] -. runs the whole pipeline .-> U
+    LOG -. reviewed by .-> H((Human reviewer))
+    EV -. results reviewed by .-> H
