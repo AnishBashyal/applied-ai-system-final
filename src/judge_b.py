@@ -63,13 +63,16 @@ def judge_b(query: str, songs: List[Dict], index: np.ndarray, k: int = 5) -> Dic
     """Return Judge B's opinion on a query, in the same shape as Judge A's.
 
     ranking holds the top k songs with their cosine similarity as the score.
+    strength is how far the best similarity sits above the catalog average: real
+    requests stand out from the pack, nonsense does not (see eval/calibrate_threshold.py).
     If Gemini cannot be reached, Judge B abstains instead of raising.
     """
     try:
         vector = np.array(gemini_client.embed_texts([query])[0], dtype=float)
     except GeminiError as error:
         logger.error("judge B abstaining: %s", error)
-        return {"judge": "B", "abstained": True, "reason": f"embedding failed: {error}", "ranking": []}
+        return {"judge": "B", "abstained": True, "reason": f"embedding failed: {error}",
+                "strength": 0.0, "ranking": []}
 
     vector = vector / np.linalg.norm(vector)
     similarities = index @ vector
@@ -84,4 +87,6 @@ def judge_b(query: str, songs: List[Dict], index: np.ndarray, k: int = 5) -> Dic
         }
         for i in order
     ]
-    return {"judge": "B", "abstained": False, "reason": "ranked by description similarity", "ranking": ranking}
+    strength = float(similarities[order[0]] - similarities.mean())
+    return {"judge": "B", "abstained": False, "reason": "ranked by description similarity",
+            "strength": round(strength, 3), "ranking": ranking}

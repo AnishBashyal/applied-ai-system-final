@@ -80,3 +80,11 @@ def test_judge_b_abstains_when_gemini_fails(fake_embed, tmp_path, monkeypatch):
     assert result["abstained"] is True
     assert result["ranking"] == []
     assert "down" in result["reason"]
+
+
+def test_strength_is_top_similarity_minus_catalog_average(fake_embed, tmp_path):
+    index = jb.build_index(SONGS, cache_path=str(tmp_path / "c.json"))
+    result = jb.judge_b("rainy", SONGS, index, k=3)
+    vector = np.array([0.9, 0.1]) / np.linalg.norm([0.9, 0.1])
+    sims = index @ vector
+    assert result["strength"] == pytest.approx(sims.max() - sims.mean(), abs=1e-3)
