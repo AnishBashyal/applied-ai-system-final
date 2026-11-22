@@ -220,6 +220,13 @@ Decision:   request is empty
 
 **The grounding check is plain code.** Gemini has to quote the retrieved text, and the code checks the quote is really there. I did this instead of asking a second AI model to check the first one, because it is simpler, free, and can't be fooled the same way. Trade-off: it only proves the quote is real, not that every word of the explanation is right. For example, one explanation said "deep concentration" when the description said "deep relaxation".
 
+**Retrieval from two sources, not one.** The explainer gets the song's own description and also a short note about its genre and its mood (`data/notes.json`). I compared the same picks with and without the notes. For "romantic dinner jazz", the song Coffee Shop Stories got:
+
+- Without notes: *"It features smooth brushed drums and warm piano jazz for a cozy setting."*
+- With notes: *"It provides warm and relaxed low-energy jazz that suits quiet evenings and dinners."*
+
+The second one ties back to the request (dinner), because the jazz note says jazz "suits cafes, dinners, and quiet evenings". The effect is small. Other songs, like Velvet Smoke, came out almost the same with or without the notes. The notes mostly help when a song's own description does not mention what the user asked for.
+
 **It still works when things fail.** Gemini calls retry up to 3 times with a 30 second limit. If Gemini is down, the songs show their plain descriptions. If Judge B is down, Judge A answers alone with a warning and low confidence. Every run is logged, including refusals. Trade-off: with no key, vibe requests get refused because only Judge B can handle them.
 
 **Small choices:**
