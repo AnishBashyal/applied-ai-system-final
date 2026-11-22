@@ -1,0 +1,26 @@
+OUTCOME CHECKS
+| Request                                | What it tests                                  | Expected   | Got      |   Conf | Top picks                                  | Result   |
+|----------------------------------------|------------------------------------------------|------------|----------|--------|--------------------------------------------|----------|
+| mellow music for studying late at n... | keywords and meaning agree                     | ok         | ok       |   0.6  | Library Rain, Midnight Coding              | PASS     |
+| gym workout rock                       | high-energy request                            | ok         | ok       |   0.8  | Backroad Riot, Storm Runner                | PASS     |
+| romantic dinner jazz                   | genre and mood together                        | ok         | ok       |   0.8  | Candlelight Standards, Coffee Shop Stories | PASS     |
+| happy summer pop                       | upbeat request                                 | ok         | ok       |   0.6  | Sunrise City, Rooftop Lights               | PASS     |
+| calm acoustic folk                     | acoustic preference                            | ok         | ok       |   0.4  | Pine Forest Hymn, Willow Creek             | PASS     |
+| angry rebellious punk                  | aggressive request                             | ok         | ok       |   0.4  | Garage Fever, Iron Requiem                 | PASS     |
+| cozy rainy afternoon                   | no keywords: Judge A abstains, B answers alone | warning    | warning  |   0.44 | Library Rain, Coffee Shop Stories          | PASS     |
+| asdf qwerty                            | letters but meaningless                        | refused    | refused  |   0    |                                            | PASS     |
+| how do I bake bread                    | off-topic request                              | refused    | refused  |   0    |                                            | PASS     |
+| tax return deadline                    | off-topic request                              | refused    | refused  |   0    |                                            | PASS     |
+| (empty)                                | empty input                                    | rejected   | rejected |   0    |                                            | PASS     |
+| 12345 !!! ???                          | no letters                                     | rejected   | rejected |   0    |                                            | PASS     |
+| music music music music music music... | over the length limit                          | rejected   | rejected |   0    |                                            | PASS     |
+
+CONSISTENCY CHECKS (each request run twice)
+| Request                                 | Outcome                | Result   |
+|-----------------------------------------|------------------------|----------|
+| mellow music for studying late at night | same 5 songs both runs | PASS     |
+| gym workout rock                        | same 5 songs both runs | PASS     |
+| cozy rainy afternoon                    | same 5 songs both runs | PASS     |
+
+SUMMARY: 16/16 checks passed (13/13 outcome, 3/3 consistency)
+Average confidence on answered requests: 0.58

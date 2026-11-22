@@ -1,0 +1,3 @@
+input rejected: request is empty
+input rejected: request has too few letters to be a music request
+input rejected: request is too long (359 characters, limit 200)
