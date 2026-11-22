@@ -39,3 +39,57 @@ Where checking happens:
 
 - **Tests:** a pytest suite that runs offline with a fake Gemini, and an evaluation script (`eval/run_eval.py`) that runs fixed requests through the whole system.
 - **Human:** the answer shows the confidence and any warning, and the run log can be read afterwards to see what each judge picked and why.
+
+## Setup instructions
+
+I tested these steps in a fresh clone of this repo (Python 3.14, macOS).
+
+1. **Clone the repo**
+
+   ```bash
+   git clone https://github.com/AnishBashyal/applied-ai-system-final.git
+   cd applied-ai-system-final
+   ```
+
+2. **Make a virtual environment and install the packages**
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate      # Mac or Linux
+   .venv\Scripts\activate         # Windows
+   pip install -r requirements.txt
+   ```
+
+3. **Add your Gemini API key** (needed for Judge B and the explanations). Get a free key at https://aistudio.google.com (Get API key), then:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Open `.env` and replace `your_key_here` with your key. The `.env` file is in `.gitignore`, so it never gets committed.
+
+4. **Run the app**
+
+   ```bash
+   python -m src.main --query "mellow music for studying late at night"
+   ```
+
+   Running `python -m src.main` with no `--query` still shows my original demo (top 5 for 6 test profiles).
+
+5. **Run the tests** (they work offline with a fake Gemini, no key needed)
+
+   ```bash
+   pytest
+   ```
+
+6. **Run the evaluation script** (needs the key, takes about a minute)
+
+   ```bash
+   python -m eval.run_eval
+   ```
+
+   It prints a pass/fail table. Every run of the app also adds a line to `logs/runs.jsonl`.
+
+**If you have no key:** the app still works, but only Judge A answers. The answer comes with a warning and a lower confidence, and vibe requests with no keywords (like "cozy rainy afternoon") are refused. The tests all pass without a key.
+
+**Notes:** the song embeddings are already saved in `data/embeddings_cache.json`, so nothing big is downloaded. Each request makes about 2 small Gemini calls (one embedding, one explanation). If you change a song description, the cache rebuilds that one song on the next run.
