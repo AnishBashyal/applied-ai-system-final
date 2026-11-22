@@ -264,3 +264,9 @@ The 6 new requests (I wrote what I expected before running them):
 - Checking the AI with a second, different method (the two judges) caught problems that one method alone would hide. The first version of Judge A ranked songs by energy alone when it understood nothing, and it looked confident. I only found that by tracing one request through the system.
 - Testing against real numbers beat guessing. Top similarity could not separate real from nonsense requests, but the "strength" number could.
 - Several bugs only showed up when I ran the real Gemini: the embedding model merged a list of texts into one vector, and the first model I picked kept timing out.
+
+## Reflection
+
+The biggest thing I learned is that getting an AI model to give an answer is the easy part. The hard part is knowing when to trust it. Most of my work was the checking around Gemini: two judges that can't share a mistake, a confidence score, a refusal when nothing fits, and a check that the explanations quote real text. I also learned to test with the real service. The fake Gemini in my unit tests could not show me that the embedding model merges a list of texts into one vector, or that one model kept timing out. The more detailed reflection on limitations, misuse and how I worked with AI is in [model_card.md](model_card.md).
+
+**What this project says about me as an AI engineer:** I build the AI feature and the safety net around it together. I measure before I set a threshold, I keep my tests honest by using requests I haven't tuned on, and I write down what the system can't do. Code: https://github.com/AnishBashyal/applied-ai-system-final
