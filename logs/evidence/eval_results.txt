@@ -1,4 +1,4 @@
-OUTCOME CHECKS
+OUTCOME CHECKS (first set: most of these were also used to calibrate the confidence floor)
 | Request                                | What it tests                                  | Expected   | Got      |   Conf | Top picks                                  | Result   |
 |----------------------------------------|------------------------------------------------|------------|----------|--------|--------------------------------------------|----------|
 | mellow music for studying late at n... | keywords and meaning agree                     | ok         | ok       |   0.6  | Library Rain, Midnight Coding              | PASS     |
@@ -15,6 +15,16 @@ OUTCOME CHECKS
 | 12345 !!! ???                          | no letters                                     | rejected   | rejected |   0    |                                            | PASS     |
 | music music music music music music... | over the length limit                          | rejected   | rejected |   0    |                                            | PASS     |
 
+OUTCOME CHECKS ON UNSEEN REQUESTS (never used for calibration)
+| Request                                | What it tests               | Expected   | Got     |   Conf | Top picks                       | Result   |
+|----------------------------------------|-----------------------------|------------|---------|--------|---------------------------------|----------|
+| chill beats to fall asleep to          | unseen: sleep request       | ok/warning | ok      |    0.6 | Midnight Coding, Library Rain   | PASS     |
+| upbeat music for a long run            | unseen: exercise request    | ok/warning | ok      |    0.4 | Sunrise City, Rooftop Lights    | PASS     |
+| sad piano for a rainy night            | unseen: mood and instrument | ok/warning | warning |    0.2 | Glass Hearts, Nocturne in Gray  | PASS     |
+| songs that feel like a summer road ... | unseen: vibe request        | ok/warning | ok      |    0.4 | Highway Sunrise, Rooftop Lights | PASS     |
+| best pizza toppings                    | unseen: off-topic request   | refused    | refused |    0   |                                 | PASS     |
+| what's the weather tomorrow            | unseen: off-topic request   | refused    | refused |    0   |                                 | PASS     |
+
 CONSISTENCY CHECKS (each request run twice)
 | Request                                 | Outcome                | Result   |
 |-----------------------------------------|------------------------|----------|
@@ -22,5 +32,5 @@ CONSISTENCY CHECKS (each request run twice)
 | gym workout rock                        | same 5 songs both runs | PASS     |
 | cozy rainy afternoon                    | same 5 songs both runs | PASS     |
 
-SUMMARY: 16/16 checks passed (13/13 outcome, 3/3 consistency)
-Average confidence on answered requests: 0.58
+SUMMARY: 22/22 checks passed (13/13 first set, 6/6 unseen, 3/3 consistency)
+Average confidence on answered requests: 0.51
