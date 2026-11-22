@@ -228,3 +228,39 @@ Decision:   request is empty
 - I saved the song embeddings in the repo (`data/embeddings_cache.json`), so a normal run only needs one embedding call for the request.
 - Gemini's embedding model (`gemini-embedding-2`) merges a list of texts into one vector, so I embed one text at a time.
 - I use `gemini-3.5-flash-lite` for text. A bigger model I tried first kept returning "high demand" errors.
+
+## Testing summary
+
+**Result: 22/22 checks passed (13/13 first set, 6/6 unseen, 3/3 consistency).** Average confidence on answered requests: 0.51.
+
+- **Unit tests:** `pytest` runs 102 tests (the 23 from the original project plus new ones for the parser, both judges, validator, agreement check, explainer, pipeline and Gemini client). They use a fake Gemini, so they run offline in under a second.
+- **Evaluation script:** `python -m eval.run_eval` runs 22 checks on the whole system: 13 requests (most of them also used to set the confidence floor), 6 new requests I never used for that, and 3 requests run twice to check the picks stay the same. Full output: [logs/evidence/eval_results.txt](logs/evidence/eval_results.txt). Per-run logs: [logs/evidence/eval_runs.jsonl](logs/evidence/eval_runs.jsonl).
+
+The 6 new requests (I wrote what I expected before running them):
+
+| Request                                | What it tests               | Expected   | Got     |   Conf | Top picks                       | Result   |
+|----------------------------------------|-----------------------------|------------|---------|--------|---------------------------------|----------|
+| chill beats to fall asleep to          | unseen: sleep request       | ok/warning | ok      |    0.6 | Midnight Coding, Library Rain   | PASS     |
+| upbeat music for a long run            | unseen: exercise request    | ok/warning | ok      |    0.4 | Sunrise City, Rooftop Lights    | PASS     |
+| sad piano for a rainy night            | unseen: mood and instrument | ok/warning | warning |    0.2 | Glass Hearts, Nocturne in Gray  | PASS     |
+| songs that feel like a summer road ... | unseen: vibe request        | ok/warning | ok      |    0.4 | Highway Sunrise, Rooftop Lights | PASS     |
+| best pizza toppings                    | unseen: off-topic request   | refused    | refused |    0   |                                 | PASS     |
+| what's the weather tomorrow            | unseen: off-topic request   | refused    | refused |    0   |                                 | PASS     |
+
+**What worked**
+
+- Real requests got songs in the right genres, and nonsense, off-topic and bad input was refused or rejected.
+- The picks were identical when I ran the same request twice.
+- Gemini returned 503 and 429 errors several times during the runs. The retries and fallbacks handled all of them, and nothing crashed.
+
+**Known weak spots**
+
+- "sad piano for a rainy night" only got confidence 0.2. Judge A ranked Glass Hearts (a sad pop song) first because it weights genre heavily. This is the same bias I found in the original project.
+- The grounding check rejected 6 Gemini explanations in the last run, and those songs showed their plain description. It behaves as designed, but 6 rejections in one run is frequent. The likely cause is that Gemini paraphrases the quote instead of copying it, and the next step is to log the rejected quotes to confirm.
+- The confidence floor comes from 21 requests, so it should be checked again if the catalog or the kinds of requests change.
+
+**What I learned**
+
+- Checking the AI with a second, different method (the two judges) caught problems that one method alone would hide. The first version of Judge A ranked songs by energy alone when it understood nothing, and it looked confident. I only found that by tracing one request through the system.
+- Testing against real numbers beat guessing. Top similarity could not separate real from nonsense requests, but the "strength" number could.
+- Several bugs only showed up when I ran the real Gemini: the embedding model merged a list of texts into one vector, and the first model I picked kept timing out.
