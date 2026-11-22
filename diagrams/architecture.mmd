@@ -1,39 +1,45 @@
 flowchart TD
-    U([User request: free text]) --> V{Input validator<br/>empty, too long, unreadable?}
-    V -- invalid --> R1[/Refuse with a clear message/]
-    V -- valid --> KP
-    V -- valid --> GP
+    U(["User request (free text)"]) --> V{"Input validator<br/>src/validator.py<br/>empty, too long, not text?"}
+    V -- rejected --> REJ[/"Rejected with a reason"/]
+    V -- ok --> KP
+    V -- ok --> EMB
 
-    subgraph JA [Judge A - rules, no LLM]
-        KP[Keyword parser] --> SC[Original scorer<br/>genre, mood, energy, acoustic]
-        SC --> AB{Genre or mood<br/>recognised?}
-    end
-    AB -- no --> ABS[A abstains]
-    AB -- yes --> RA[A top-k ranking]
-
-    subgraph JB [Judge B - Gemini]
-        GP[Gemini parser<br/>rewrites request as a vibe description] --> EM[Gemini embeddings]
-        EM --> RT[Retriever: cosine similarity<br/>over song descriptions]
-        RT --> RB[B top-k ranking + similarity]
+    subgraph JA ["Judge A: rules, no LLM (src/judge_a.py)"]
+        KP["Keyword parser<br/>lexicon and negation"] --> SC["Original scorer<br/>genre, mood, energy, acoustic"]
+        SC --> AQ{"Genre or mood<br/>recognised?"}
+        AQ -- no --> AABS["A abstains"]
+        AQ -- yes --> ARANK["A top 5 + reasons"]
     end
 
-    KB[(Song descriptions<br/>data/songs.csv)] --> RT
-    NT[(Genre and mood notes<br/>data/notes.json)] --> EX
+    subgraph JB ["Judge B: meaning, Gemini embeddings (src/judge_b.py)"]
+        EMB["Embed the raw request"] --> SIM["Cosine similarity against<br/>cached song description vectors"]
+        EMB -- "Gemini unreachable" --> BABS["B abstains"]
+        SIM --> BRANK["B top 5 + strength"]
+    end
 
-    RA --> AG
-    ABS --> AG
-    RB --> AG
-    AG{Agreement check<br/>overlap of A and B top-k<br/>+ B similarity} -- weak or none --> R2[/Refuse: no confident match/]
-    AG -- ok --> EX[Gemini explainer<br/>writes the why from retrieved text]
-    EX --> GC{Grounding check<br/>claims found in retrieved text?}
-    GC -- no --> R3[/Fall back to plain retrieved text/]
-    GC -- yes --> OUT[/Recommendations + explanation + confidence/]
-    R3 --> OUT
+    CSV[("data/songs.csv<br/>catalog + descriptions")] --> SC
+    CSV -- "embedded once" --> IDX[("data/embeddings_cache.json<br/>description vectors")]
+    IDX --> SIM
 
-    OUT --> LOG[(Run log)]
-    R1 --> LOG
-    R2 --> LOG
+    ARANK --> AG
+    AABS --> AG
+    BRANK --> AG
+    BABS --> AG
+    AG{"Agreement check<br/>src/agreement.py<br/>overlap of top 5, B strength floor"}
+    AG -- "no shared picks, or no judge trusted" --> REF[/"Refused: no confident match"/]
+    AG -- "recommend, or recommend with warning<br/>plus a confidence score" --> EXP
 
-    EV[Evaluation script<br/>fixed test queries, pass/fail] -. runs the whole pipeline .-> U
-    LOG -. reviewed by .-> H((Human reviewer))
-    EV -. results reviewed by .-> H
+    NOTES[("data/notes.json<br/>genre and mood notes")] --> EXP
+    EXP["Gemini explainer<br/>src/explainer.py<br/>writes the why, must quote its source"] --> GC{"Grounding check (code)<br/>quote found in the retrieved text?"}
+    GC -- yes --> ANS
+    GC -- "no, or Gemini down" --> FB["Use the retrieved description<br/>for that song"] --> ANS
+    ANS[/"Answer: picks, explanations,<br/>confidence, warning"/]
+
+    REJ --> LOG[("logs/runs.jsonl<br/>one line per run")]
+    REF --> LOG
+    ANS --> LOG
+
+    CAL["eval/calibrate_threshold.py<br/>real vs nonsense requests"] -. "sets the B strength floor" .-> AG
+    TESTS["pytest suite<br/>offline, fake Gemini"] -. "checks every component" .-> V
+    LOG -. "reviewed by" .-> H((Human reviewer))
+    ANS -. "warning and confidence shown to" .-> H
