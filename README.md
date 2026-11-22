@@ -205,3 +205,26 @@ Request:
 Status:     REJECTED   (confidence 0.00)
 Decision:   request is empty
 ```
+
+## Design decisions
+
+**I kept my original scorer and built around it.** The old scoring rules became Judge A without any change, so everything I built in Module 3 is still used. Trade-off: Judge A still has the old problems (it weights genre a lot, and needs exact words).
+
+**Two judges that can't share a mistake.** At first Gemini was going to turn the request into keywords for Judge A too. I saw that this was a problem: if Gemini misread the request, both judges would follow the same wrong reading, and their agreement would mean nothing. So Judge A uses its own keyword parser with no AI, and Judge B uses embeddings. They only meet at the agreement check. Trade-off: the keyword parser is weak on words it doesn't know ("cozy", "rainy"). I accepted that trade-off, because Judge A then says "no opinion" and Judge B can answer with a warning.
+
+**Two judges, not three.** I first thought about a third judge where Gemini reads the songs and rates them. It would work almost the same way as the embedding judge (both go by meaning), so it would not add much. I cut it, and Gemini is used for explaining instead.
+
+**Judge B embeds the raw request.** I considered having Gemini rewrite the request as a song-style description first. I left it out because it adds another call, another thing that can fail, and Gemini could add details the user never said. The raw request already matched well. *Possible improvement:* with a much bigger catalog, I would try the rewrite step first if matching got weaker.
+
+**The confidence floor comes from data.** Top similarity alone could not tell real requests from nonsense (real: 0.62 to 0.86, nonsense: 0.53 to 0.67). The "strength" number (best match minus the average song) could (real: at least 0.076, nonsense: at most 0.070). I used 0.075 as the floor, and 0.10 when Judge B has to answer alone. Trade-off: the gap is small and it comes from 21 requests, so the floor should be checked again if the catalog or the kinds of requests change. The script that made the numbers is `eval/calibrate_threshold.py`.
+
+**The grounding check is plain code.** Gemini has to quote the retrieved text, and the code checks the quote is really there. I did this instead of asking a second AI model to check the first one, because it is simpler, free, and can't be fooled the same way. Trade-off: it only proves the quote is real, not that every word of the explanation is right. For example, one explanation said "deep concentration" when the description said "deep relaxation".
+
+**It still works when things fail.** Gemini calls retry up to 3 times with a 30 second limit. If Gemini is down, the songs show their plain descriptions. If Judge B is down, Judge A answers alone with a warning and low confidence. Every run is logged, including refusals. Trade-off: with no key, vibe requests get refused because only Judge B can handle them.
+
+**Small choices:**
+
+- I grew the catalog from 18 to 36 songs and wrote a one-sentence description for each, because semantic search needs something to compare. The catalog is synthetic, so results show how the system behaves rather than real music taste.
+- I saved the song embeddings in the repo (`data/embeddings_cache.json`), so a normal run only needs one embedding call for the request.
+- Gemini's embedding model (`gemini-embedding-2`) merges a list of texts into one vector, so I embed one text at a time.
+- I use `gemini-3.5-flash-lite` for text. A bigger model I tried first kept returning "high demand" errors.
