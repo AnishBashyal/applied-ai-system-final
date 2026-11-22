@@ -4,7 +4,8 @@ each result against what we expect.
 
 Needs GEMINI_API_KEY for the full result. Run with:  python -m eval.run_eval
 
-Each case states the status the system should return. Cases that should be
+Each case states the status the system should return. Most cases in the
+first group were also used to calibrate the confidence floor; the second group of unseen requests was not. Cases that should be
 answered also name genres, and at least one recommended song must be in them,
 so a confident answer full of wrong songs does not pass. A final check runs a
 few requests twice and compares the recommended songs.
@@ -39,12 +40,28 @@ CASES = [
     ("music " * 60, {"rejected"}, None, "over the length limit"),
 ]
 
+# requests that were never used to calibrate the confidence floor, so they test unseen input.
+# Expectations were written before these were ever run. "ok" or "warning" both count as
+# answered; what matters is that the system answers, with songs in a sensible genre.
+HELD_OUT_CASES = [
+    ("chill beats to fall asleep to", {"ok", "warning"}, {"lofi", "ambient", "classical", "folk"},
+     "unseen: sleep request"),
+    ("upbeat music for a long run", {"ok", "warning"}, {"edm", "pop", "punk", "rock", "indie pop"},
+     "unseen: exercise request"),
+    ("sad piano for a rainy night", {"ok", "warning"}, {"classical", "folk", "blues", "pop", "ambient"},
+     "unseen: mood and instrument"),
+    ("songs that feel like a summer road trip", {"ok", "warning"},
+     {"country", "reggae", "indie pop", "pop", "rock"}, "unseen: vibe request"),
+    ("best pizza toppings", {"refused"}, None, "unseen: off-topic request"),
+    ("what's the weather tomorrow", {"refused"}, None, "unseen: off-topic request"),
+]
+
 CONSISTENCY_QUERIES = ["mellow music for studying late at night", "gym workout rock", "cozy rainy afternoon"]
 
 
-def evaluate(pipeline, genre_of):
+def evaluate(pipeline, genre_of, cases):
     rows, passed, answered_conf = [], 0, []
-    for query, allowed, genres, tests in CASES:
+    for query, allowed, genres, tests in cases:
         result = pipeline.run(query)
         ok = result["status"] in allowed
         detail = ""
@@ -79,21 +96,28 @@ def main() -> int:
     pipeline = Pipeline(run_log=RUN_LOG)
     genre_of = {s["title"]: s["genre"] for s in load_songs("data/songs.csv")}
 
-    rows, passed, confidences = evaluate(pipeline, genre_of)
-    print("OUTCOME CHECKS")
-    print(tabulate(rows, headers=["Request", "What it tests", "Expected", "Got", "Conf", "Top picks", "Result"],
-                   tablefmt="github"))
+    headers = ["Request", "What it tests", "Expected", "Got", "Conf", "Top picks", "Result"]
+    rows, passed, confidences = evaluate(pipeline, genre_of, CASES)
+    print("OUTCOME CHECKS (first set: most of these were also used to calibrate the confidence floor)")
+    print(tabulate(rows, headers=headers, tablefmt="github"))
+
+    h_rows, h_passed, h_conf = evaluate(pipeline, genre_of, HELD_OUT_CASES)
+    print("\nOUTCOME CHECKS ON UNSEEN REQUESTS (never used for calibration)")
+    print(tabulate(h_rows, headers=headers, tablefmt="github"))
 
     c_rows, c_passed = consistency(pipeline)
     print("\nCONSISTENCY CHECKS (each request run twice)")
     print(tabulate(c_rows, headers=["Request", "Outcome", "Result"], tablefmt="github"))
 
-    total = len(rows) + len(c_rows)
-    print(f"\nSUMMARY: {passed + c_passed}/{total} checks passed "
-          f"({passed}/{len(rows)} outcome, {c_passed}/{len(c_rows)} consistency)")
+    total = len(rows) + len(h_rows) + len(c_rows)
+    all_passed = passed + h_passed + c_passed
+    print(f"\nSUMMARY: {all_passed}/{total} checks passed "
+          f"({passed}/{len(rows)} first set, {h_passed}/{len(h_rows)} unseen, "
+          f"{c_passed}/{len(c_rows)} consistency)")
+    confidences += h_conf
     if confidences:
         print(f"Average confidence on answered requests: {sum(confidences) / len(confidences):.2f}")
-    return 0 if passed + c_passed == total else 1
+    return 0 if all_passed == total else 1
 
 
 if __name__ == "__main__":
