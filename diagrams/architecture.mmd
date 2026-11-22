@@ -41,5 +41,7 @@ flowchart TD
 
     CAL["eval/calibrate_threshold.py<br/>real vs nonsense requests"] -. "sets the B strength floor" .-> AG
     TESTS["pytest suite<br/>offline, fake Gemini"] -. "checks every component" .-> V
+    EVAL["eval/run_eval.py<br/>fixed requests, repeat runs,<br/>pass/fail summary"] -. "runs the whole pipeline" .-> U
+    EVAL -. "results reviewed by" .-> H
     LOG -. "reviewed by" .-> H((Human reviewer))
     ANS -. "warning and confidence shown to" .-> H
