@@ -18,3 +18,7 @@ venv/
 .env
 .env.*
 !.env.example
+
+# Run logs written by the pipeline
+logs/runs.jsonl
+logs/*.log
