@@ -1,8 +1,12 @@
 """
-Command line runner for the Music Recommender Simulation.
+Command line runner for TasteMatch.
 
-Loads the songs, then prints the top 5 recommendations for each test profile.
+  python -m src.main                       original demo: top 5 for each test profile
+  python -m src.main --query "your text"   ask for music in plain words
 """
+
+import argparse
+import logging
 
 from tabulate import tabulate
 
@@ -39,5 +43,27 @@ def main() -> None:
         print()
 
 
+def run_query(query: str) -> None:
+    """Send a free-text request through the full pipeline and print the answer."""
+    from src.pipeline import Pipeline
+
+    result = Pipeline().run(query)
+    print(f"Request:    {result['query']}")
+    print(f"Status:     {result['status'].upper()}   (confidence {result['confidence']:.2f})")
+    print(f"Decision:   {result['message']}")
+    if result.get("warning"):
+        print(f"Warning:    {result['warning']}")
+    for i, pick in enumerate(result["picks"], start=1):
+        print(f"\n{i}. {pick['title']} - {pick['artist']}")
+        print(f"   {pick['explanation']}")
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="TasteMatch music recommender")
+    parser.add_argument("--query", help="ask for music in plain words, e.g. 'calm music for studying'")
+    args = parser.parse_args()
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+    if args.query is not None:
+        run_query(args.query)
+    else:
+        main()
